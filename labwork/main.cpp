@@ -34,22 +34,43 @@ void splitFileF0toF1F2(const std::string& inputFile, const std::string& fileF1, 
 	std::ifstream fin(inputFile);
 	std::ofstream fout1(fileF1);
 	std::ofstream fout2(fileF2);
+
 	if (!fin.is_open() || !fout1.is_open() || !fout2.is_open()) {
 		std::cerr << "Error opening files for splitting.\n";
 		return;
 	}
-	bool toggle = true;
-	int currentNumber;
 
-	while (fin >> currentNumber) {
+	bool toggle = true; 
+	int currentNumber;
+	int nextNumber;
+
+	if (!(fin >> currentNumber)) {
+		fin.close();
+		fout1.close();
+		fout2.close();
+		return;
+	}
+
+	while (fin >> nextNumber) {
 		if (toggle) {
 			fout1 << currentNumber << " ";
 		}
 		else {
 			fout2 << currentNumber << " ";
 		}
-		toggle = !toggle;
+		if (currentNumber > nextNumber) {
+			toggle = !toggle;
+		}
+
+		currentNumber = nextNumber;
 	}
+	if (toggle) {
+		fout1 << currentNumber << " ";
+	}
+	else {
+		fout2 << currentNumber << " ";
+	}
+
 	fin.close();
 	fout1.close();
 	fout2.close();
