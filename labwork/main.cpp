@@ -32,9 +32,10 @@ bool createFileWithRandomNumbers(const std::string& fileName, const int numbersC
 	return true;
 }
 int main() {
-	if (createFileWithRandomNumbers("mainFile", 20, 100)) {
+	std::ifstream f0;
+	if (createFileWithRandomNumbers("mainFile", 10, 100)) {
 		std::cout << "file f0 create:\n";
-		std::ifstream f0("mainFile");
+		f0.open("mainFile");
 		if (!f0.is_open()) {
 			std::cerr << "Eror with open file for read.\n";
 			return -1;
@@ -44,13 +45,13 @@ int main() {
 			std::cout << number << " ";
 		}
 		std::cout << std::endl;
-
-		f0.close();
 	}
 	else {
 		std::cerr << "problem with create main file.\n";
 		return -1;
 	}
 
+
+	f0.close();
 	return 0;
 }
