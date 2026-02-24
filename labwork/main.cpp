@@ -1,5 +1,6 @@
 #include <iostream>
 #include <random>
+#include <fstream> 
 
 using uint = unsigned int;
 int* generateArray(const int ArraySize, const uint UpperBound, const uint LowerBound = 0) {
@@ -13,9 +14,19 @@ int* generateArray(const int ArraySize, const uint UpperBound, const uint LowerB
 	return outputArray;
 }
 int main() {
-	int* prototipe = new int[10];
-	prototipe=generateArray(10,20);
-	for (int i = 0; i < 10; i++) {
-		printf("%d ",prototipe[i]);
+	int* prototipe = generateArray(10, 20);
+	FILE* file = nullptr;
+	errno_t err = fopen_s(&file, "textfile.txt", "wt");
+	if (err != 0 || file == nullptr) {
+		puts("File Open Error!");
+		return -1;
 	}
-	return 0;}
+	for (int i = 0; i < 10; ++i)
+		fprintf(file, "%d ", prototipe[i]);
+	for (int i = 0; i < 10; i++) {
+		printf("%d ", prototipe[i]);
+	}
+	delete[] prototipe;
+	fclose(file);
+	return 0;
+}
