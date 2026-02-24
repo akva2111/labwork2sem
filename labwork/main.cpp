@@ -3,30 +3,54 @@
 #include <fstream> 
 
 using uint = unsigned int;
-int* generateArray(const int ArraySize, const uint UpperBound, const uint LowerBound = 0) {
-	int* outputArray = new int[ArraySize];
-	std::random_device randomDevice;
-	std::mt19937_64 generator(randomDevice());
-	std::uniform_int_distribution<uint> distribution(LowerBound, UpperBound);
-	for (int i = 0; i < ArraySize; i++) {
-		outputArray[i] = distribution(generator);
+#include <string>
+
+bool createFileWithRandomNumbers(const std::string& fileName, const int numbersCount, const int maxNumberValue) {
+	std::ofstream outFile(fileName);
+	if (!outFile.is_open()) {
+		return false;
 	}
-	return outputArray;
+	std::random_device rd;
+	std::mt19937_64 gen(rd());
+	std::uniform_int_distribution<int> dist(0, maxNumberValue);
+	const int bufferSize = 10000;
+	int* buffer = new int[bufferSize];
+	int remaining = numbersCount;
+	while (remaining > 0) {
+		int currentBatchSize = std::min(remaining, bufferSize);
+		for (int i = 0; i < currentBatchSize; ++i) {
+			buffer[i] = dist(gen);
+		}
+		for (int i = 0; i < currentBatchSize; ++i) {
+			outFile << buffer[i] << " ";
+		}
+		remaining -= currentBatchSize;
+	}
+
+	delete[] buffer;
+	outFile.close();
+	return true;
 }
 int main() {
-	int* prototipe = generateArray(10, 20);
-	FILE* file = nullptr;
-	errno_t err = fopen_s(&file, "textfile.txt", "wt");
-	if (err != 0 || file == nullptr) {
-		puts("File Open Error!");
+	if (createFileWithRandomNumbers("mainFile", 20, 100)) {
+		std::cout << "file f0 create:\n";
+		std::ifstream f0("mainFile");
+		if (!f0.is_open()) {
+			std::cerr << "Eror with open file for read.\n";
+			return -1;
+		}
+		std::string number;
+		while (f0 >> number) {
+			std::cout << number << " ";
+		}
+		std::cout << std::endl;
+
+		f0.close();
+	}
+	else {
+		std::cerr << "problem with create main file.\n";
 		return -1;
 	}
-	for (int i = 0; i < 10; ++i)
-		fprintf(file, "%d ", prototipe[i]);
-	for (int i = 0; i < 10; i++) {
-		printf("%d ", prototipe[i]);
-	}
-	delete[] prototipe;
-	fclose(file);
+
 	return 0;
 }
