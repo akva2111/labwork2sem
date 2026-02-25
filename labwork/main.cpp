@@ -108,7 +108,7 @@ void mergeFiles(const std::string& inFile1, const std::string& inFile2,
 			if (toggle) { fout1 << aCurrentNumber << " "; }
 			else { fout2 << aCurrentNumber << " "; }
 			if (fin1 >> next1) {
-				if (next1 >= aCurrentNumber) {aCurrentNumber = next1; break;}
+				if (next1 >= aCurrentNumber) {aCurrentNumber = next1;}
 				else {
 					if (toggle) { fout1 << bCurrentNumber << " "; }
 					else { fout2 << bCurrentNumber << " "; }
@@ -116,24 +116,24 @@ void mergeFiles(const std::string& inFile1, const std::string& inFile2,
 					if (fin2 >> next2) {
 						if (next2 >= bCurrentNumber) {
 							while (next2 >= bCurrentNumber) {
-							bCurrentNumber = next2;
-							if (toggle) { fout1 << bCurrentNumber << " "; }
-							else { fout2 << bCurrentNumber << " "; }
-							if (!(fin2 >> next2)) { has2 = !has2; }
+								bCurrentNumber = next2;
+								if (toggle) { fout1 << bCurrentNumber << " "; }
+								else { fout2 << bCurrentNumber << " "; }
+								if (!(fin2 >> next2)) { has2 = !has2; break; }
+							}
 						}
-						}
-						else { toggle = !toggle; bCurrentNumber = next2; break; }
+						else {toggle = !toggle; bCurrentNumber = next2;}
 					}
-					else { has2 = !has2; }
+					else { has2 = !has2; break;}
 				}
 			}
-			else { has1 = !has1;}
+			else { has1 = !has1; break;}
 		}
 		else{
 			if (toggle) { fout1 << bCurrentNumber << " "; }
 			else { fout2 << bCurrentNumber << " "; }
 			if (fin2 >> next2) {
-				if (next2 >= bCurrentNumber) { bCurrentNumber = next2; break; }
+				if (next2 >= bCurrentNumber) { bCurrentNumber = next2;}
 				else{
 					if (toggle) { fout1 << aCurrentNumber << " "; }
 					else { fout2 << aCurrentNumber << " "; }
@@ -143,17 +143,20 @@ void mergeFiles(const std::string& inFile1, const std::string& inFile2,
 								aCurrentNumber = next1;
 								if (toggle) { fout1 << aCurrentNumber << " "; }
 								else { fout2 << aCurrentNumber << " "; }
-								if (!(fin2 >> next2)) { has2 = !has2; }
+								if (!(fin2 >> next2)) { has2 = !has2; break; }
 							}
 						}
-						else { toggle = !toggle; aCurrentNumber = next1; break; }
+						else { toggle = !toggle; aCurrentNumber = next1;}
 					}
-					else { has1 = !has1; }
+					else { has1 = !has1; break;}
 				}
 			}
-			else { has2 = !has2; }
+			else { has2 = !has2; break;}
 		}
 	}
+	toggle = !toggle;
+	if (!has1) { 2; }
+	else { 1; }
 	fin1.close(); fin2.close(); fout1.close(); fout2.close();
 }
 int main() {
