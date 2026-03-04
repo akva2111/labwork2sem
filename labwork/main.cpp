@@ -116,7 +116,7 @@ void mergeFiles(const std::string& inFile1, const std::string& inFile2,
 
 					if (fin2 >> next2) {
 						if (next2 >= bCurrentNumber) {
-							while (next2 >= bCurrentNumber) {
+							while (1) {
 								bCurrentNumber = next2;
 								if (toggle) { fout1 << bCurrentNumber << " "; }
 								else { fout2 << bCurrentNumber << " "; }
@@ -143,12 +143,13 @@ void mergeFiles(const std::string& inFile1, const std::string& inFile2,
 					else { fout2 << aCurrentNumber << " "; }
 					if (fin1 >> next1) {
 						if (next1 >= aCurrentNumber) {
-							while (next1 >= aCurrentNumber) {
+							while (1) {
 								aCurrentNumber = next1;
 								if (toggle) { fout1 << aCurrentNumber << " "; }
 								else { fout2 << aCurrentNumber << " "; }
-								if (!(fin2 >> next2)) { has2 = !has2; break; }
+								if (!(fin1 >> next1)) { has1 = !has1; break; }
 							}
+							toggle = !toggle;
 						}
 						else { toggle = !toggle; aCurrentNumber = next1;}
 					}
@@ -166,7 +167,7 @@ void mergeFiles(const std::string& inFile1, const std::string& inFile2,
 			if (!(fin1 >> next1)) {
 				has1 = !has1;
 			}
-			if (aCurrentNumber >= next1) { toggle = !toggle; }
+			if (aCurrentNumber > next1) { toggle = !toggle; }
 			aCurrentNumber = next1;
 		}
 		}
@@ -177,7 +178,7 @@ void mergeFiles(const std::string& inFile1, const std::string& inFile2,
 				if (!(fin2 >> next2)) {
 					has2 = !has2;
 				}
-				if (bCurrentNumber >= next2) { toggle = !toggle; }
+				if (bCurrentNumber > next2) { toggle = !toggle; }
 				bCurrentNumber = next2;
 			}
 		}
@@ -205,6 +206,7 @@ int main() {
 		std::cerr << "problem with create main file.\n";
 		return -1;
 	}*/
+	
 
 	splitFileF0toF1F2("f0.txt", "f1.txt", "f2.txt");
 	std::cout << "File f1.txt and f2.txt create and  not empty.\n";
@@ -215,19 +217,28 @@ int main() {
 	std::cout << " f2.txt: ";
 	PrintFile("f2.txt");
 
-	std::ifstream f1("f1.txt"), f2("f2.txt"), f3("f3.txt"), f4("f4.txt");
-	while (f2.is_open()|| f4.is_open()) {
-		f1.close(), f2.close(), f3.close(), f4.close();
+	bool end = false;
+	while (!end) {
+
 		mergeFiles("f1.txt", "f2.txt", "f3.txt", "f4.txt");
 		std::cout << " f3.txt: ";
-		PrintFile("f3.txt"); 
+		PrintFile("f3.txt");
 		std::cout << " f4.txt: ";
 		PrintFile("f4.txt");
+		std::ifstream f4("f4.txt");
+		if (f4.peek() == EOF) {
+		f4.close(); break;
+	}
+
 		mergeFiles("f3.txt", "f4.txt", "f1.txt", "f2.txt");
 		std::cout << " f1.txt: ";
 		PrintFile("f1.txt");
 		std::cout << " f2.txt: ";
 		PrintFile("f2.txt");
+		std::ifstream f2("f2.txt");
+		if (f2.peek() == EOF) {
+			f2.close(); break;
+		}
 	}
 
 	return 0;
