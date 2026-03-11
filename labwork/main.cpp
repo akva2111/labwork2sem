@@ -123,13 +123,14 @@ void mergeFiles(const std::string& inFile1, const std::string& inFile2,
 									else { fout2 << bCurrentNumber << " "; }
 									if (!(fin2 >> next2)) { has2 = !has2; break; }
 								}
+								break;
 							}
 							bCurrentNumber = next2;
 							toggle = !toggle;
 						}
 						else {toggle = !toggle; bCurrentNumber = next2;}
 					}
-					else { has2 = !has2; break;}
+					else { toggle = !toggle; has2 = !has2; break;}
 				}
 			}
 			else { has1 = !has1; break;}
@@ -150,10 +151,10 @@ void mergeFiles(const std::string& inFile1, const std::string& inFile2,
 									aCurrentNumber = next1;
 									if (toggle) { fout1 << aCurrentNumber << " "; }
 									else { fout2 << aCurrentNumber << " "; }
-									if (!(fin1 >> next1)) { has1 = !has1; break; }
+									if (!(fin1 >> next1)) {has1 = !has1; break; }
 								}
+								break;
 							}
-							toggle = !toggle;
 						}
 						else { toggle = !toggle; aCurrentNumber = next1;}
 					}
@@ -163,6 +164,7 @@ void mergeFiles(const std::string& inFile1, const std::string& inFile2,
 			else { has2 = !has2; break;}
 		}
 	}
+	
 	if (!has1|| !has2) { 
 		if (!has2) {
 			while(has1) {
@@ -190,7 +192,10 @@ void mergeFiles(const std::string& inFile1, const std::string& inFile2,
 	fin1.close(); fin2.close(); fout1.close(); fout2.close();
 }
 int main() {
-	/*if (createFileWithRandomNumbers("f0.txt", 10, 100)) {
+	int a, b;
+	printf("input len and max");
+	scanf_s("%d %d",&a,&b);
+	if (createFileWithRandomNumbers("f0.txt", a, b)) {
 		std::cout << "file f0 create:\n";
 
 		
@@ -209,7 +214,7 @@ int main() {
 	else {
 		std::cerr << "problem with create main file.\n";
 		return -1;
-	}*/
+	}
 	
 
 	splitFileF0toF1F2("f0.txt", "f1.txt", "f2.txt");
