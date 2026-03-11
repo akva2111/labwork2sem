@@ -117,10 +117,12 @@ void mergeFiles(const std::string& inFile1, const std::string& inFile2,
 					if (fin2 >> next2) {
 						if (next2 >= bCurrentNumber) {
 							while (1) {
-								bCurrentNumber = next2;
-								if (toggle) { fout1 << bCurrentNumber << " "; }
-								else { fout2 << bCurrentNumber << " "; }
-								if (!(fin2 >> next2)) { has2 = !has2; break; }
+								if (next2 >= bCurrentNumber) {
+									bCurrentNumber = next2;
+									if (toggle) { fout1 << bCurrentNumber << " "; }
+									else { fout2 << bCurrentNumber << " "; }
+									if (!(fin2 >> next2)) { has2 = !has2; break; }
+								}
 							}
 							bCurrentNumber = next2;
 							toggle = !toggle;
@@ -144,10 +146,12 @@ void mergeFiles(const std::string& inFile1, const std::string& inFile2,
 					if (fin1 >> next1) {
 						if (next1 >= aCurrentNumber) {
 							while (1) {
-								aCurrentNumber = next1;
-								if (toggle) { fout1 << aCurrentNumber << " "; }
-								else { fout2 << aCurrentNumber << " "; }
-								if (!(fin1 >> next1)) { has1 = !has1; break; }
+								if (next1 >= aCurrentNumber) {
+									aCurrentNumber = next1;
+									if (toggle) { fout1 << aCurrentNumber << " "; }
+									else { fout2 << aCurrentNumber << " "; }
+									if (!(fin1 >> next1)) { has1 = !has1; break; }
+								}
 							}
 							toggle = !toggle;
 						}
