@@ -3,31 +3,51 @@
 #include "lib.h"
 
 int main() {
-    int numbersCount, maxNumberValue, actions = 0;
-    std::cout << "input len and max: ";
-    std::cin >> numbersCount >> maxNumberValue;
-
-    if (numbersCount != 0) {
-        if (createFileWithRandomNumbers("f0.txt", numbersCount, maxNumberValue)) {
-            std::cout << "file f0 create:\n";
-
-            std::ifstream f0("f0.txt");
-            if (!f0.is_open()) {
-                std::cerr << "Error with open file for read.\n";
+    int numbersCount=1, maxNumberValue=1, actions = 0;
+    bool choose = false;
+    std::cout << "do you want work with beafor file?(1=yes/0=no)";
+    std::cin >> choose;
+    if (!choose) {
+        choose = false;
+        while (choose == false) {
+            std::cout << "input len and max: ";
+            std::cin >> numbersCount >> maxNumberValue;
+            if (createFileWithRandomNumbers("f0.txt", numbersCount, maxNumberValue)) {
+                std::cout << "file f0 create:\n";
+                std::ifstream f0("f0.txt");
+                if (!f0.is_open()) {
+                    std::cerr << "Error with open file for read.\n";
+                    return -1;
+                }
+                std::string number;
+                while (f0 >> number) {
+                    std::cout << number << " ";
+                }
+                std::cout << std::endl;
+                f0.close();
+            }
+            else {
+                std::cerr << "problem with create main file.\n";
                 return -1;
             }
-            std::string number;
-            while (f0 >> number) {
-                std::cout << number << " ";
-            }
-            std::cout << std::endl;
-            f0.close();
+            std::cout << "do you agree with this number in file?(1=yes/0=no)";
+            std::cin >> choose;
         }
-        else {
-            std::cerr << "problem with create main file.\n";
-            return -1;
-        }
-
+    }
+    std::cout << "work with file f0:\n";
+    std::ifstream f0("f0.txt");
+    if (!f0.is_open()) {
+        std::cerr << "Error with open file for read.\n";
+        return -1;
+    }
+    std::string number;
+    while (f0 >> number) {
+        std::cout << number << " ";
+    }
+    std::cout << std::endl;
+    f0.close();
+    if (numbersCount!=0) {
+    
         splitFileF0toF1F2("f0.txt", "f1.txt", "f2.txt");
         std::cout << "File f1.txt and f2.txt create and not empty.\n";
 
@@ -87,8 +107,11 @@ int main() {
             PrintFile("f3.txt");
         }
     }
-    else {
+    else if(numbersCount==0) {
         std::cout << "lenfile=0 so it doesn't need to be sorted\n";
+    }
+    else {
+        std::cout << "problem with input number\n";
     }
 
     return 0;
